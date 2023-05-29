@@ -1,33 +1,22 @@
 import pandas as pd
 import tensorflow as tf
+import numpy as np
+from matplotlib import pyplot as plt
 
 train_df = pd.read_csv('model/earthquakes_train_model.csv', index_col=0)
 test_df = pd.read_csv('model/earthquakes_test_model.csv', index_col=0)
 
+train_df = train_df.reindex(np.random.permutation(train_df.index)) # shuffle the training set
 
-scale_factor = 1000.0
+print(train_df.head())
 
-# Scale the training set's label.
-train_df["MAG"] /= scale_factor 
+# scale_factor = 1000.0
 
-# Scale the test set's label
-test_df["MAG"] /= scale_factor
+# # Scale the training set's label.
+# train_df["MAG"] /= scale_factor 
 
-# DEFINE MODEL -----------------------------------------------------------------------------------------
+# # Scale the test set's label
+# test_df["MAG"] /= scale_factor
 
-#@title Define the functions that build and train a model
-def build_model(my_learning_rate):
-  """Create and compile a simple linear regression model."""
-  # Most simple tf.keras models are sequential.
-  model = tf.keras.models.Sequential()
+# # DEFINE MODEL -----------------------------------------------------------------------------------------
 
-  # Add one linear layer to the model to yield a simple linear regressor.
-  model.add(tf.keras.layers.Dense(units=1, input_shape=(1,)))
-
-  # Compile the model topography into code that TensorFlow can efficiently
-  # execute. Configure training to minimize the model's mean squared error. 
-  model.compile(optimizer=tf.keras.optimizers.experimental.RMSprop(learning_rate=my_learning_rate),
-                loss="mean_squared_error",
-                metrics=[tf.keras.metrics.RootMeanSquaredError()])
-
-  return model 
